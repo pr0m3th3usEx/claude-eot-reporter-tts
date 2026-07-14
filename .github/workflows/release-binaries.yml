@@ -1,0 +1,108 @@
+name: Release binaries
+
+# Builds pocket-tts-cli (lite, no web UI) for every supported platform and
+# attaches the archives + SHA256SUMS to the GitHub Release for the tag. The
+# plugin's tts-setup.sh downloads the matching archive at install time.
+#
+# Trigger by pushing a tag like v1.0.0 (matching the plugin.json version), or run
+# manually via workflow_dispatch with the tag to build.
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to build and release (e.g. v1.0.0)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            ext: tar.gz
+          - os: macos-14
+            target: aarch64-apple-darwin
+            ext: tar.gz
+          - os: macos-13
+            target: x86_64-apple-darwin
+            ext: tar.gz
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            ext: zip
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Build the tag on manual runs; the pushed tag otherwise.
+          ref: ${{ github.event.inputs.tag || github.ref }}
+          submodules: recursive
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Build lite CLI
+        working-directory: pocket-tts
+        run: cargo build --release --no-default-features -p pocket-tts-cli --target ${{ matrix.target }}
+
+      - name: Package
+        shell: bash
+        env:
+          TAG_INPUT: ${{ github.event.inputs.tag }}
+        run: |
+          set -euo pipefail
+          TAG="${TAG_INPUT:-$GITHUB_REF_NAME}"
+          dir="pocket-tts/target/${{ matrix.target }}/release"
+          archive="pocket-tts-cli-${TAG}-${{ matrix.target }}.${{ matrix.ext }}"
+          mkdir -p dist
+          if [ "${{ matrix.ext }}" = "zip" ]; then
+            ( cd "$dir" && 7z a -tzip "$archive" "pocket-tts-cli.exe" >/dev/null && mv "$archive" "$OLDPWD/dist/" )
+            ( cd dist && sha256sum "$archive" > "$archive.sha256" )
+          else
+            tar -czf "dist/$archive" -C "$dir" "pocket-tts-cli"
+            ( cd dist && shasum -a 256 "$archive" > "$archive.sha256" )
+          fi
+          ls -la dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.target }}
+          path: dist/*
+
+  release:
+    name: Publish release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          pattern: dist-*
+          merge-multiple: true
+
+      - name: Assemble SHA256SUMS
+        run: |
+          set -euo pipefail
+          cd dist
+          cat ./*.sha256 > SHA256SUMS
+          rm -f ./*.sha256
+          echo "=== SHA256SUMS ==="; cat SHA256SUMS
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag || github.ref_name }}
+          files: |
+            dist/*.tar.gz
+            dist/*.zip
+            dist/SHA256SUMS
+          generate_release_notes: true

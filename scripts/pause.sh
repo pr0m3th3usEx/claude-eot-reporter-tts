@@ -19,9 +19,6 @@ esac
 
 tts_set_setting TTS_PAUSED "${NEW}"
 
-# TEMP DEBUG: record what this command sees (remove once pause is confirmed working).
-echo "[$(date +%H:%M:%S)] pause(${arg}->${NEW}): PLUGIN_DATA=${PLUGIN_DATA} SETTINGS=${SETTINGS_FILE}" >> "${HOME}/.tts-debug.log" 2>/dev/null || true
-
 if [ "${NEW}" = "1" ]; then
   # Also stop any speech that is currently playing, not just future events.
   pkill -f 'pocket-tts-cli generate' 2>/dev/null || true

@@ -6,8 +6,12 @@
 # directory that contains this hooks/ folder so the scripts also work standalone.
 PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 
-# Persistent per-plugin data dir (survives plugin updates, unlike PLUGIN_ROOT).
-PLUGIN_DATA="${CLAUDE_PLUGIN_DATA:-${HOME}/.cache/claude-eot-report-tts}"
+# Per-user data dir. We deliberately do NOT use ${CLAUDE_PLUGIN_DATA}: it is set
+# for hooks but NOT for slash-command shells, so relying on it makes /setup (a
+# command) and the Stop hook read different files. A fixed HOME path resolves
+# identically in every context and survives plugin updates. (TTS_DATA_DIR is an
+# override for tests.)
+PLUGIN_DATA="${TTS_DATA_DIR:-${HOME}/.cache/claude-eot-report-tts}"
 mkdir -p "${PLUGIN_DATA}" 2>/dev/null || true
 
 # HuggingFace cache lives inside PLUGIN_DATA so downloaded models persist across

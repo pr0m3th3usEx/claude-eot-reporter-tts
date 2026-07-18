@@ -7,6 +7,15 @@ set -euo pipefail
 
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
+# TEMP DEBUG: record what this hook sees (remove once pause is confirmed working).
+echo "[$(date +%H:%M:%S)] notify: PLUGIN_DATA=${PLUGIN_DATA} SETTINGS=${SETTINGS_FILE} exists=$([ -f "${SETTINGS_FILE}" ] && echo y || echo n) TTS_PAUSED=${TTS_PAUSED}" >> "${HOME}/.tts-debug.log" 2>/dev/null || true
+
+# Paused via /pause: stay fully silent (no speech, no bell).
+if [ "${TTS_PAUSED}" = "1" ]; then
+  echo "[$(date +%H:%M:%S)] notify: PAUSED -> silent" >> "${HOME}/.tts-debug.log" 2>/dev/null || true
+  exit 0
+fi
+
 # Read the hook JSON from stdin and extract the message (truncate for brevity).
 INPUT=""
 if [ ! -t 0 ]; then INPUT="$(cat)"; fi

@@ -1,14 +1,14 @@
 {
   "name": "claude-eot-report-tts",
   "displayName": "Claude End-of-Task Report TTS",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "A plugin that generates text-to-speech reports when Claude finishes a task or asks the user for input.",
   "author": {
     "name": "Miosan",
     "email": "miosan_desu@proton.me"
   },
-  "repository": "https://github.com/pr0m3th3usex/claude-eot-report-tts.git",
-  "homepage": "https://github.com/pr0m3th3usex/claude-eot-report-tts",
+  "repository": "https://github.com/pr0m3th3usEx/claude-eot-reporter-tts.git",
+  "homepage": "https://github.com/pr0m3th3usEx/claude-eot-reporter-tts",
   "license": "MIT",
   "keywords": ["claude", "eot", "report", "tts", "text-to-speech", "plugin"]
 }

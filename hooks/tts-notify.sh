@@ -22,8 +22,13 @@ emit_bell() {
     "$(printf '%s' "${MSG}" | sed 's/"/\\"/g')"
 }
 
-# Not ready yet (download still running): fall back to a bell notification.
+# Not set up yet: never download here. Bell + a ONE-TIME hint to run /setup.
 if ! tts_is_ready; then
+  HINT_MARKER="${PLUGIN_DATA}/.setup-hint-shown"
+  if [ ! -f "${HINT_MARKER}" ]; then
+    echo "claude-eot-report-tts: TTS is not set up yet. Run /claude-eot-report-tts:setup to enable spoken task summaries." >&2
+    touch "${HINT_MARKER}" 2>/dev/null || true
+  fi
   emit_bell
   exit 0
 fi
@@ -35,10 +40,10 @@ if ! command -v ffplay >/dev/null 2>&1; then
   exit 0
 fi
 
-# Detached synthesis + playback. MSG is passed via env (no shell injection);
-# $0 inside bash -c is the binary path.
-TTS_MSG="${MSG}" nohup bash -c \
-  '"$0" generate --text "$TTS_MSG" --stream 2>/dev/null \
+# Detached synthesis + playback in the user's chosen voice. MSG and voice are
+# passed via env (no shell injection); $0 inside bash -c is the binary path.
+TTS_MSG="${MSG}" TTS_VOICE="${TTS_VOICE}" nohup bash -c \
+  '"$0" generate --text "$TTS_MSG" --voice "$TTS_VOICE" --stream 2>/dev/null \
      | ffplay -f s16le -ar 24000 -ch_layout mono -nodisp -autoexit \
               -probesize 32 -analyzeduration 0 -i pipe:0 >/dev/null 2>&1' \
   "${BIN}" </dev/null >/dev/null 2>&1 &

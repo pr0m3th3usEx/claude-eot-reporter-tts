@@ -1,0 +1,21 @@
+{
+  "name": "claude-eot-report-tts",
+  "owner": {
+    "name": "miosan",
+    "email": ""
+  },
+  "metadata": {
+    "description": "A plugin that generates text-to-speech reports when Claude finishes a task or asks the user for input.",
+    "version": "0.0.2"
+  },
+  "plugins": [
+    {
+      "name": "claude-eot-report-tts",
+      "source": "./",
+      "description": "A plugin that generates text-to-speech reports when Claude finishes a task or asks the user for input.",
+      "category": "productivity",
+      "tags": ["text-to-speech", "report", "notification", "tts", "end-of-tasks"]
+    }
+  ],
+  "version": "0.0.2"
+}

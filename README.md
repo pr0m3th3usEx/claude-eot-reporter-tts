@@ -9,6 +9,19 @@ A Claude Code plugin that generates spoken summaries when Claude finishes a task
 - **Spoken task summaries**: When Claude finishes a task, the plugin speaks a short summary of what happened (the last assistant message, up to 300 characters). Runs in the background so it doesn't block your workflow.
 - **Window focus on input**: When Claude needs your input, the plugin refocuses your terminal/editor window and sends an OS-level notification (macOS, Linux, Windows).
 
+## Prerequisites
+
+These dependencies are optional but highly recommended:
+
+- **`ffmpeg`** (provides `ffplay`) — Required for audio playback. Without it, the plugin downloads and caches everything but stays silent (falls back to a terminal bell). To install:
+  - macOS: `brew install ffmpeg`
+  - Ubuntu/Debian: `apt-get install ffmpeg`
+  - Windows: `choco install ffmpeg` or download from [ffmpeg.org](https://ffmpeg.org)
+
+- **`curl` or `wget`** — Required to download the `pocket-tts-cli` binary and model (~244 MB). One of these is usually installed by default.
+
+- **`jq`** (optional) — Used to extract the assistant message from hook JSON. Without it, spoken summaries fall back to a generic "Task completed" message.
+
 ## Install
 
 ### Via marketplace (recommended)
@@ -43,19 +56,6 @@ Then run the setup command:
 ```bash
 /claude-eot-report-tts:setup
 ```
-
-## Prerequisites
-
-These dependencies are optional but highly recommended:
-
-- **`ffmpeg`** (provides `ffplay`) — Required for audio playback. Without it, the plugin downloads and caches everything but stays silent (falls back to a terminal bell). To install:
-  - macOS: `brew install ffmpeg`
-  - Ubuntu/Debian: `apt-get install ffmpeg`
-  - Windows: `choco install ffmpeg` or download from [ffmpeg.org](https://ffmpeg.org)
-
-- **`curl` or `wget`** — Required to download the `pocket-tts-cli` binary and model (~244 MB). One of these is usually installed by default.
-
-- **`jq`** (optional) — Used to extract the assistant message from hook JSON. Without it, spoken summaries fall back to a generic "Task completed" message.
 
 ## Commands
 

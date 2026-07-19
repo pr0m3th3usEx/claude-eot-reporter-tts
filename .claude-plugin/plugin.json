@@ -1,7 +1,7 @@
 {
   "name": "claude-eot-report-tts",
   "displayName": "Claude End-of-Task Report TTS",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "A plugin that generates text-to-speech reports when Claude finishes a task or asks the user for input.",
   "author": {
     "name": "Miosan",

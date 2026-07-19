@@ -2,7 +2,7 @@
 description: Install the pocket-tts binary and a chosen voice so the plugin can speak task results aloud.
 argument-hint: [voice]
 disable-model-invocation: true
-allowed-tools: AskUserQuestion, Read, Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/install.sh:*)
+allowed-tools: AskUserQuestion, Read, Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/install.sh:*), Bash(curl:*)
 ---
 
 # Claude End-of-Task TTS — Setup

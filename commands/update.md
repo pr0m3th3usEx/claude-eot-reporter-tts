@@ -1,7 +1,7 @@
 ---
 description: Check for and install a newer pocket-tts-cli binary matching this plugin version.
 disable-model-invocation: true
-allowed-tools: Read, Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/update.sh:*)
+allowed-tools: Read, Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/update.sh:*), Bash(curl:*)
 ---
 
 # Claude End-of-Task TTS — Update

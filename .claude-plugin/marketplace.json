@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "A plugin that generates text-to-speech reports when Claude finishes a task or asks the user for input.",
-    "version": "0.0.2"
+    "version": "1.0.0"
   },
   "plugins": [
     {
@@ -17,5 +17,5 @@
       "tags": ["text-to-speech", "report", "notification", "tts", "end-of-tasks"]
     }
   ],
-  "version": "0.0.2"
+  "version": "1.0.0"
 }
